@@ -1,0 +1,5 @@
+{
+  "functions": {
+    "api/hub-ai.js": { "maxDuration": 30 }
+  }
+}
