@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Training Minds · Hub Central</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Sora:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#070d1a;--s0:#0c1525;--s1:#101e33;--s2:#162540;--s3:#1e304f;
+  --border:rgba(201,160,42,.12);--border-h:rgba(201,160,42,.35);--border-s:rgba(201,160,42,.06);
+  --gold:#c9a02a;--gold-l:#e2b93b;--gold-d:#9a7a20;--gold-glow:rgba(201,160,42,.12);--gold-text:#f0d060;
+  --cream:#ede8dd;--cream2:#b8b0a3;--cream3:#6e6860;
+  --v:#22c55e;--vl:rgba(34,197,94,.14);--r:#f87171;--rl:rgba(248,113,113,.12);--a:#fbbf24;--al:rgba(251,191,36,.12);
+  --rad:14px;--rad-s:10px;--rad-xs:7px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--cream);min-height:100vh;-webkit-font-smoothing:antialiased}
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200' width='320' height='320'%3E%3Cellipse cx='100' cy='75' rx='80' ry='45' fill='none' stroke='rgba(201,160,42,0.04)' stroke-width='1.5'/%3E%3Cellipse cx='100' cy='75' rx='55' ry='30' fill='none' stroke='rgba(201,160,42,0.03)' stroke-width='1'/%3E%3Crect x='87' y='118' width='26' height='52' rx='6' fill='rgba(201,160,42,0.02)'/%3E%3C/svg%3E");background-repeat:repeat;pointer-events:none;z-index:0}
+body>*{position:relative;z-index:1}
+
+/* HEADER */
+header{background:rgba(7,13,26,.96);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:11px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.brand{display:flex;align-items:center;gap:10px}
+.brand-icon{width:34px;height:34px;background:linear-gradient(135deg,var(--gold),var(--gold-d));border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:.95rem;box-shadow:0 0 16px rgba(201,160,42,.3)}
+.brand-t1{font-family:'Cormorant Garamond',serif;font-size:1.05rem;font-weight:700;color:var(--cream);line-height:1}
+.brand-t2{font-size:.58rem;font-weight:600;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold);margin-top:2px}
+.h-right{display:flex;align-items:center;gap:10px}
+#h-user{font-size:.72rem;color:var(--cream3)}
+#btn-logout{border:1px solid var(--border);background:none;color:var(--cream3);padding:5px 12px;border-radius:6px;cursor:pointer;font-size:.72rem;font-family:'Sora',sans-serif;transition:.15s}
+#btn-logout:hover{border-color:var(--border-h);color:var(--cream)}
+
+/* LAYOUT */
+.app{max-width:1080px;margin:0 auto;padding:18px 16px 100px}
+.screen{display:none}.screen.act{display:block}
+.sc-full{display:none;align-items:center;justify-content:center;min-height:calc(100vh - 46px);padding:20px}
+.sc-full.act{display:flex}
+
+/* BOTTOM NAV */
+.bottom-nav{display:none;position:fixed;bottom:0;left:0;right:0;background:rgba(7,13,26,.96);backdrop-filter:blur(24px);border-top:1px solid var(--border);z-index:100;justify-content:space-around;padding:10px 0 max(12px,env(safe-area-inset-bottom))}
+.bottom-nav.act{display:flex}
+.nav-btn{display:flex;flex-direction:column;align-items:center;gap:3px;border:none;background:none;color:var(--cream3);cursor:pointer;padding:4px 12px;font-size:.58rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;transition:.2s;font-family:'Sora',sans-serif;position:relative}
+.nav-btn.act{color:var(--gold)}
+.nav-btn .ico{font-size:1.2rem}
+.nav-badge{position:absolute;top:0;right:6px;background:var(--r);color:#fff;font-size:.5rem;font-weight:700;min-width:14px;height:14px;border-radius:7px;display:flex;align-items:center;justify-content:center;padding:0 3px}
+
+/* LOGIN */
+.login-wrap{background:linear-gradient(160deg,var(--s1),var(--bg));border:1px solid var(--border);border-radius:20px;padding:36px 28px;width:100%;max-width:390px;box-shadow:0 32px 80px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.03);position:relative;overflow:hidden}
+.login-wrap::before{content:'🌿';position:absolute;right:-20px;top:-20px;font-size:8rem;opacity:.04;pointer-events:none}
+.login-crown{width:60px;height:60px;background:linear-gradient(135deg,var(--gold),var(--gold-d));border-radius:16px;margin:0 auto 14px;display:flex;align-items:center;justify-content:center;font-size:1.8rem;box-shadow:0 8px 32px rgba(201,160,42,.35)}
+.login-title{font-family:'Cormorant Garamond',serif;font-size:1.7rem;font-weight:700;text-align:center;color:var(--cream);margin-bottom:4px}
+.login-sub{font-size:.75rem;color:var(--cream3);text-align:center;margin-bottom:28px}
+.f{display:flex;flex-direction:column;gap:6px}
+.lbl{font-size:.65rem;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--cream3)}
+.inp{border:1px solid var(--border);border-radius:var(--rad-xs);font-size:.85rem;color:var(--cream);background:rgba(255,255,255,.03);outline:none;width:100%;font-family:'Sora',sans-serif;height:42px;padding:0 14px;transition:.2s}
+.inp::placeholder{color:var(--cream3)}
+.inp:focus{border-color:var(--gold);background:rgba(201,160,42,.06);box-shadow:0 0 0 3px rgba(201,160,42,.08)}
+.pin-row{display:flex;gap:10px;justify-content:center;margin:14px 0 20px}
+.pin-dot{width:13px;height:13px;border-radius:50%;border:2px solid var(--border);transition:.2s}
+.pin-dot.fill{background:var(--gold);border-color:var(--gold);box-shadow:0 0 8px rgba(201,160,42,.5)}
+.pin-pad{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;max-width:220px;margin:0 auto}
+.pin-btn{height:52px;border:1px solid var(--border);border-radius:10px;background:rgba(255,255,255,.03);cursor:pointer;font-size:1.1rem;font-weight:600;color:var(--cream);transition:.15s;font-family:'Cormorant Garamond',serif}
+.pin-btn:active,.pin-btn:hover{background:var(--gold-glow);border-color:var(--border-h);color:var(--gold-text)}
+
+/* BUTTONS */
+.btn{padding:10px 18px;border:none;border-radius:var(--rad-xs);cursor:pointer;font-size:.82rem;font-weight:600;transition:.18s;display:inline-flex;align-items:center;justify-content:center;gap:7px;font-family:'Sora',sans-serif}
+.btn-gold{background:linear-gradient(135deg,var(--gold-l),var(--gold));color:#1a0f00;box-shadow:0 2px 16px rgba(201,160,42,.3)}
+.btn-gold:hover{box-shadow:0 4px 24px rgba(201,160,42,.45);transform:translateY(-1px)}
+.btn-out{background:none;border:1px solid var(--border);color:var(--cream2)}
+.btn-out:hover{border-color:var(--border-h);color:var(--gold-text)}
+.btn-full{width:100%;height:46px;margin-top:12px}
+.divider{height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent);margin:20px 0}
+
+/* CARDS */
+.card{background:var(--s0);border:1px solid var(--border-s);border-radius:var(--rad);padding:20px;margin-bottom:14px;box-shadow:0 4px 24px rgba(0,0,0,.2);position:relative;overflow:hidden}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent)}
+.card-title{font-family:'Cormorant Garamond',serif;font-size:1rem;font-weight:700;color:var(--cream);margin-bottom:16px;display:flex;align-items:center;gap:10px}
+.card-title::before{content:'';display:block;width:2px;height:16px;background:linear-gradient(180deg,var(--gold-l),var(--gold-d));border-radius:1px}
+
+/* HERO */
+.hero-card{background:linear-gradient(135deg,var(--s2) 0%,var(--s1) 60%,var(--bg) 100%);border:1px solid var(--border);border-radius:var(--rad);padding:28px;margin-bottom:16px;position:relative;overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,.4)}
+.hero-card::after{content:'🌿';position:absolute;right:-16px;bottom:-16px;font-size:7rem;opacity:.05;pointer-events:none}
+.hc-eyebrow{font-size:.6rem;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold);margin-bottom:8px}
+.hc-name{font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:700;color:var(--cream);line-height:1;margin-bottom:4px}
+.hc-rol{font-size:.73rem;color:var(--cream3);margin-bottom:0}
+.hc-line{height:1px;background:linear-gradient(90deg,var(--border),transparent);margin:16px 0}
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.stat-box{background:var(--s0);border:1px solid var(--border-s);border-radius:var(--rad-s);padding:14px 10px;text-align:center}
+.sv{font-family:'Cormorant Garamond',serif;font-size:1.8rem;font-weight:700;color:var(--gold-text);line-height:1}
+.sl{font-size:.55rem;color:var(--cream3);text-transform:uppercase;letter-spacing:.8px;margin-top:5px;font-weight:600;line-height:1.3}
+
+/* SECTION HEADER */
+.sec-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:6px}
+.sec-title{font-size:.65rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--cream3)}
+.sec-link{font-size:.72rem;color:var(--gold);cursor:pointer;transition:.15s}
+.sec-link:hover{color:var(--gold-text)}
+
+/* APPS GRID */
+.apps-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px;margin-bottom:20px}
+.app-card{background:var(--s1);border:1px solid var(--border);border-radius:var(--rad-s);padding:18px;cursor:pointer;transition:.2s;display:flex;align-items:center;gap:14px;text-decoration:none;color:inherit}
+.app-card:hover{border-color:var(--border-h);background:var(--s2);transform:translateY(-2px);box-shadow:0 8px 28px rgba(0,0,0,.3)}
+.app-card.soon{opacity:.5;cursor:default;pointer-events:none}
+.app-icon{width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0}
+.app-icon.gold{background:linear-gradient(135deg,rgba(201,160,42,.15),rgba(201,160,42,.08));border:1px solid var(--border-h)}
+.app-icon.green{background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.2)}
+.app-icon.dim{background:rgba(255,255,255,.04);border:1px solid var(--border-s)}
+.app-info{flex:1;min-width:0}
+.app-name{font-family:'Cormorant Garamond',serif;font-size:.98rem;font-weight:700;color:var(--cream);margin-bottom:3px}
+.app-desc{font-size:.67rem;color:var(--cream3);line-height:1.4}
+.app-badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:.57rem;font-weight:700;margin-top:5px;letter-spacing:.5px}
+.badge-on{background:var(--vl);color:var(--v)}
+.badge-off{background:rgba(255,255,255,.06);color:var(--cream3)}
+
+/* MÉTODOS */
+.metodos-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(275px,1fr));gap:10px}
+.metodo-card{background:var(--s0);border:1px solid var(--border-s);border-radius:var(--rad-s);padding:18px;position:relative;overflow:hidden;transition:.2s}
+.metodo-card:hover{border-color:var(--border);background:var(--s1)}
+.metodo-card::before{content:'';position:absolute;top:0;left:0;bottom:0;width:3px;background:var(--mc,var(--gold))}
+.mc-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px}
+.mc-emoji{font-size:1.5rem;line-height:1}
+.mc-live{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:20px;font-size:.6rem;font-weight:700;background:var(--vl);color:var(--v)}
+.mc-name{font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:700;color:var(--cream);margin-bottom:2px}
+.mc-nicho{font-size:.67rem;color:var(--cream3);margin-bottom:10px}
+.mc-tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.mc-tag{font-size:.63rem;padding:3px 9px;border-radius:5px;background:rgba(255,255,255,.05);color:var(--cream3)}
+.mc-tag.precio{color:var(--gold-text);background:var(--gold-glow)}
+.mc-tag.gan{color:var(--v);background:var(--vl)}
+.mc-prods{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:12px}
+.mc-prod{font-size:.6rem;padding:2px 7px;border-radius:4px;background:var(--s2);color:var(--cream2);border:1px solid var(--border-s)}
+.mc-btn{display:block;width:100%;padding:9px;border:none;border-radius:var(--rad-xs);cursor:pointer;font-size:.75rem;font-weight:700;font-family:'Sora',sans-serif;transition:.15s;text-align:center;text-decoration:none}
+.mc-btn.on{background:linear-gradient(135deg,var(--gold-l),var(--gold));color:#1a0f00}
+.mc-btn.on:hover{box-shadow:0 4px 18px rgba(201,160,42,.4);transform:translateY(-1px)}
+.mc-btn.off{background:rgba(255,255,255,.04);border:1px solid var(--border-s);color:var(--cream3);cursor:default}
+
+/* RED */
+.red-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
+.soc-card{background:var(--s0);border:1px solid var(--border-s);border-radius:var(--rad-s);padding:14px 16px;margin-bottom:8px;display:flex;align-items:center;gap:12px;transition:.15s}
+.soc-card:hover{border-color:var(--border);background:var(--s1)}
+.soc-av{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--s2),var(--s3));border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:1rem;font-weight:700;color:var(--gold-text);flex-shrink:0}
+.soc-info{flex:1;min-width:0}
+.soc-name{font-size:.85rem;font-weight:600;color:var(--cream);display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.soc-sub{font-size:.65rem;color:var(--cream3);margin-top:3px}
+.soc-stats-row{display:flex;gap:12px;margin-top:5px}
+.soc-stat{font-size:.65rem;color:var(--cream3)}
+.soc-stat strong{color:var(--gold-text);font-family:'Cormorant Garamond',serif}
+.act-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.act-dot.on{background:var(--v);box-shadow:0 0 6px rgba(34,197,94,.5)}
+.act-dot.off{background:var(--cream3);opacity:.4}
+
+/* MÉTRICAS */
+.met-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.met-box{background:var(--s0);border:1px solid var(--border-s);border-radius:var(--rad-s);padding:18px;text-align:center}
+.met-big{font-family:'Cormorant Garamond',serif;font-size:2.6rem;font-weight:700;color:var(--gold-text);line-height:1}
+.met-lbl{font-size:.6rem;color:var(--cream3);text-transform:uppercase;letter-spacing:1px;margin-top:5px;font-weight:600}
+.met-delta{font-size:.68rem;margin-top:4px;font-weight:600}
+.bar-chart{display:flex;flex-direction:column;gap:10px}
+.bar-row{display:flex;align-items:center;gap:10px}
+.bar-label{font-size:.7rem;color:var(--cream2);min-width:110px;text-align:right;flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bar-track{flex:1;height:26px;background:rgba(255,255,255,.04);border-radius:6px;overflow:hidden}
+.bar-fill{height:100%;background:linear-gradient(90deg,var(--gold-d),var(--gold-l));border-radius:6px;transition:.6s ease;display:flex;align-items:center;padding-left:8px;min-width:32px}
+.bar-val{font-size:.7rem;font-weight:700;color:#1a0f00;white-space:nowrap}
+
+/* MISC */
+.chip{display:inline-block;padding:2px 8px;border-radius:5px;font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+.chip-gold{background:rgba(201,160,42,.15);color:var(--gold)}
+.chip-s{background:rgba(255,255,255,.06);color:var(--cream3);border:1px solid var(--border-s)}
+.chip-ok{background:var(--vl);color:var(--v)}
+.alerta{border-radius:var(--rad-xs);padding:11px 14px;font-size:.8rem;display:flex;gap:9px;margin-bottom:12px;line-height:1.5;align-items:flex-start}
+.alerta.gold{background:var(--gold-glow);border:1px solid var(--border-h);color:var(--gold-text)}
+.empty{text-align:center;padding:36px 20px;color:var(--cream3)}
+.empty .ei{font-size:2.4rem;margin-bottom:10px;opacity:.3}
+.empty p{font-size:.8rem;line-height:1.5}
+.toast{position:fixed;bottom:88px;left:50%;transform:translateX(-50%) translateY(16px);background:var(--s2);color:var(--cream);padding:10px 22px;border-radius:10px;font-size:.82rem;font-weight:500;z-index:400;transition:.3s;opacity:0;pointer-events:none;border:1px solid var(--border);max-width:88vw;text-align:center}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.spin{display:inline-block;width:15px;height:15px;border:2px solid rgba(255,255,255,.15);border-top-color:rgba(255,255,255,.8);border-radius:50%;animation:sp .6s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+.g_id_signin{display:flex;justify-content:center;margin-top:8px}
+.act-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border-s)}
+.act-row:last-child{border-bottom:none}
+
+/* AI FAB */
+.ai-fab{position:fixed;bottom:90px;right:18px;width:56px;height:56px;background:linear-gradient(135deg,var(--gold-l),var(--gold-d));border-radius:50%;border:none;cursor:pointer;z-index:150;box-shadow:0 4px 20px rgba(201,160,42,.45);display:none;align-items:center;justify-content:center;font-size:1.5rem;transition:.2s;animation:fabpulse 3s infinite}
+.ai-fab.act{display:flex}
+.ai-fab:hover{transform:scale(1.08);box-shadow:0 6px 28px rgba(201,160,42,.65)}
+@keyframes fabpulse{0%,100%{box-shadow:0 4px 20px rgba(201,160,42,.45)}50%{box-shadow:0 4px 30px rgba(201,160,42,.75)}}
+/* AI CHAT */
+.ai-msg{padding:12px 14px;border-radius:var(--rad-xs);margin-bottom:8px;font-size:.82rem;line-height:1.65}
+.ai-msg.bot{background:var(--s2);border:1px solid var(--border)}
+.ai-msg.user{background:var(--gold-glow);border:1px solid var(--border-h);color:var(--gold-text);text-align:right}
+.ai-typing{display:flex;gap:5px;padding:12px 14px;align-items:center}
+.ai-dot{width:8px;height:8px;border-radius:50%;background:var(--cream3);animation:blink 1.4s infinite}
+.ai-dot:nth-child(2){animation-delay:.2s}.ai-dot:nth-child(3){animation-delay:.4s}
+@keyframes blink{0%,80%,100%{opacity:.2}40%{opacity:1}}
+.qp-grid{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
+.qp{padding:7px 14px;border:1px solid var(--border);border-radius:20px;font-size:.72rem;cursor:pointer;background:transparent;color:var(--cream2);font-family:'Sora',sans-serif;transition:.15s;white-space:nowrap}
+.qp:hover{border-color:var(--border-h);color:var(--gold-text);background:var(--gold-glow)}
+/* MODAL */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(4px);z-index:200;align-items:flex-end;justify-content:center;padding:0}
+.modal-bg.act{display:flex}
+.modal{background:var(--s1);border:1px solid var(--border);border-radius:20px 20px 0 0;padding:24px;width:100%;max-width:580px;max-height:92vh;overflow-y:auto;animation:slideUp .22s ease;box-shadow:0 -8px 48px rgba(0,0,0,.5)}
+@keyframes slideUp{from{transform:translateY(30px);opacity:0}to{transform:translateY(0);opacity:1}}
+.modal-handle{width:38px;height:3px;background:var(--border);border-radius:2px;margin:0 auto 18px}
+.modal-title{font-family:'Cormorant Garamond',serif;font-size:1.15rem;font-weight:700;color:var(--cream);margin-bottom:14px}
+@media(min-width:600px){.modal-bg{align-items:center;padding:20px}.modal{border-radius:var(--rad);max-height:88vh}.modal-handle{display:none}}
+
+@media(max-width:640px){
+  .stats-row{grid-template-columns:1fr 1fr}
+  .metodos-grid{grid-template-columns:1fr}
+  .met-grid{grid-template-columns:1fr 1fr}
+  .sv{font-size:1.5rem}
+  .met-big{font-size:2rem}
+  .bar-label{min-width:80px;font-size:.62rem}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">
+    <div class="brand-icon">🌿</div>
+    <div><div class="brand-t1">Training Minds</div><div class="brand-t2">Hub Central</div></div>
+  </div>
+  <div class="h-right">
+    <span id="h-user"></span>
+    <button id="btn-logout" onclick="logout()" style="display:none">Salir</button>
+  </div>
+</header>
+
+<div class="toast" id="toast"></div>
+<button class="ai-fab" id="ai-fab" onclick="openModal('modal-ai')" title="Asesor IA">🤖</button>
+
+<!-- MODAL: AI CHAT -->
+<div class="modal-bg" id="modal-ai">
+  <div class="modal" style="max-width:600px">
+    <div class="modal-handle"></div>
+    <div class="modal-title">🤖 Asesor IA · Training Minds Hub</div>
+    <p style="font-size:.76rem;color:var(--cream3);margin-bottom:14px">Conozco tu negocio completo — ventas, stock, red y los 15 métodos. Preguntame lo que quieras.</p>
+    <div class="qp-grid">
+      <button class="qp" onclick="preguntarIA('¿Cómo está mi negocio este mes y qué debería priorizar?')">¿Cómo va mi negocio?</button>
+      <button class="qp" onclick="preguntarIA('¿Qué programa me conviene empujar más esta semana con mi stock actual?')">¿Qué vender esta semana?</button>
+      <button class="qp" onclick="preguntarIA('¿Qué ESP me conviene comprar ahora para maximizar mis ventas?')">¿Qué ESP compro?</button>
+      <button class="qp" onclick="preguntarIA('Dame una estrategia para crecer mi red de socios este mes.')">Crecer mi red</button>
+      <button class="qp" onclick="preguntarIA('¿Qué programas del ecosistema me generan más ganancia y cómo aprovecharlos?')">Maximizar ganancia</button>
+    </div>
+    <div id="ai-chat" style="max-height:300px;overflow-y:auto;margin-bottom:12px;border:1px solid var(--border-s);border-radius:var(--rad-xs);padding:10px;background:rgba(0,0,0,.2)">
+      <div class="ai-msg bot">¡Hola! Soy tu asesor IA del Hub Training Minds 🌿 Conozco tu negocio completo — ventas, stock, red y los 15 métodos GanoExcel. ¿En qué te ayudo hoy?</div>
+    </div>
+    <div style="display:flex;gap:8px">
+      <input class="inp" id="ai-input" placeholder="Escribí tu pregunta..." style="flex:1" onkeydown="if(event.key==='Enter')enviarIA()">
+      <button class="btn btn-gold" onclick="enviarIA()" style="padding:0 18px;height:42px;flex-shrink:0">
+        <span id="ai-spin" style="display:none" class="spin"></span><span id="ai-ico">→</span>
+      </button>
+    </div>
+    <button class="btn btn-out" onclick="closeModal('modal-ai')" style="width:100%;margin-top:10px;height:38px;font-size:.78rem">Cerrar</button>
+  </div>
+</div>
+
+<!-- ══ LOGIN ══ -->
+<div class="sc-full act" id="sc-login">
+  <div class="login-wrap">
+    <div class="login-crown">🌿</div>
+    <div class="login-title">Training Minds</div>
+    <div class="login-sub">Hub Central · GanoExcel</div>
+    <div class="f" style="margin-bottom:14px">
+      <div class="lbl">Email</div>
+      <input class="inp" type="email" id="l-email" placeholder="tu@email.com">
+    </div>
+    <div style="font-size:.68rem;color:var(--cream3);text-align:center;letter-spacing:.5px">PIN DE ACCESO</div>
+    <div class="pin-row">
+      <div class="pin-dot" id="pdl0"></div><div class="pin-dot" id="pdl1"></div>
+      <div class="pin-dot" id="pdl2"></div><div class="pin-dot" id="pdl3"></div>
+    </div>
+    <div class="pin-pad">
+      <button class="pin-btn" onclick="pinPress(1)">1</button><button class="pin-btn" onclick="pinPress(2)">2</button><button class="pin-btn" onclick="pinPress(3)">3</button>
+      <button class="pin-btn" onclick="pinPress(4)">4</button><button class="pin-btn" onclick="pinPress(5)">5</button><button class="pin-btn" onclick="pinPress(6)">6</button>
+      <button class="pin-btn" onclick="pinPress(7)">7</button><button class="pin-btn" onclick="pinPress(8)">8</button><button class="pin-btn" onclick="pinPress(9)">9</button>
+      <button class="pin-btn" onclick="pinClear()" style="font-size:.85rem;color:var(--r)">✕</button>
+      <button class="pin-btn" onclick="pinPress(0)">0</button>
+      <button class="pin-btn" onclick="pinDel()">⌫</button>
+    </div>
+    <button class="btn btn-gold btn-full" onclick="loginSocio()">
+      <span id="l-spin" style="display:none" class="spin"></span> Entrar →
+    </button>
+    <div style="height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent);margin:20px 0"></div>
+    <div style="font-size:.65rem;color:var(--cream3);text-align:center;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px">O entrá con Google</div>
+    <div id="g_id_onload" data-client_id="445285065984-efdh2i3dcsdufd48r0r3c7r5urlknino.apps.googleusercontent.com" data-callback="handleGoogleOneTap" data-auto_prompt="false"></div>
+    <div class="g_id_signin" data-type="standard" data-size="large" data-theme="filled_black" data-text="signin_with" data-shape="rectangular" data-logo_alignment="left" data-width="320"></div>
+  </div>
+</div>
+
+<!-- ══ APP ══ -->
+<div class="screen" id="sc-app">
+<div class="app">
+
+<!-- INICIO -->
+<div id="tab-inicio">
+  <div class="hero-card">
+    <div class="hc-eyebrow">Training Minds · Hub Central</div>
+    <div class="hc-name" id="hero-nombre">Cargando...</div>
+    <div class="hc-rol" id="hero-rol"></div>
+    <div class="hc-line"></div>
+    <div class="stats-row" id="stats-row">
+      <div class="stat-box"><div class="sv" id="st-ventas">0</div><div class="sl">Ventas totales</div></div>
+      <div class="stat-box"><div class="sv" id="st-ganancia">$0K</div><div class="sl">Ganancia estimada</div></div>
+      <div class="stat-box"><div class="sv" id="st-stock">0</div><div class="sl">Productos en stock</div></div>
+      <div class="stat-box" id="st-red-box" style="display:none"><div class="sv" id="st-red">0</div><div class="sl">Socios en red</div></div>
+    </div>
+  </div>
+
+  <!-- AI INSIGHT -->
+  <div id="ai-insight" style="display:none;cursor:pointer;margin-bottom:14px" onclick="openModal('modal-ai')">
+    <div class="alerta gold" style="align-items:flex-start">
+      <span style="font-size:1.2rem;flex-shrink:0">🤖</span>
+      <div><div style="font-weight:700;font-size:.82rem;margin-bottom:4px">Recomendación del Asesor IA</div><div id="ai-insight-text" style="font-size:.76rem;opacity:.85;line-height:1.55">Analizando tu negocio...</div></div>
+    </div>
+  </div>
+
+  <div class="sec-hdr"><div class="sec-title">Apps del ecosistema</div></div>
+  <div class="apps-grid" id="apps-grid"></div>
+
+  <div class="sec-hdr">
+    <div class="sec-title">Actividad reciente</div>
+    <span class="sec-link" onclick="goTab('metricas',document.getElementById('nav-metricas'))">Ver métricas →</span>
+  </div>
+  <div class="card">
+    <div id="actividad-lista"><div class="empty"><div class="ei">📊</div><p>Sin actividad registrada aún.</p></div></div>
+  </div>
+</div>
+
+<!-- MÉTODOS -->
+<div id="tab-metodos" style="display:none">
+  <div class="alerta gold" style="margin-bottom:16px">
+    <span>🌿</span>
+    <div>Los 15 métodos de transformación Training Minds × GanoExcel. Cada programa tiene composición de productos, precio y — cuando esté activa — acceso directo a su plataforma de acompañamiento.</div>
+  </div>
+  <div class="metodos-grid" id="metodos-grid"></div>
+</div>
+
+<!-- MI RED -->
+<div id="tab-red" style="display:none">
+  <div class="hero-card" style="margin-bottom:14px">
+    <div class="hc-eyebrow">Mi red Training Minds</div>
+    <div class="hc-name" style="font-size:1.4rem;margin-bottom:2px">Red de distribución</div>
+    <div class="hc-line"></div>
+    <div class="red-stats">
+      <div class="stat-box"><div class="sv" id="red-directos">0</div><div class="sl">Directos</div></div>
+      <div class="stat-box"><div class="sv" id="red-total">0</div><div class="sl">Red total</div></div>
+      <div class="stat-box"><div class="sv" id="red-activos">0</div><div class="sl">Activos mes</div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Socios directos</div>
+    <div id="red-lista"><div class="empty"><div class="ei">👥</div><p>No hay socios directos asignados aún.<br>Para agregar socios a tu red, actualizá el campo <strong>referido_por</strong> de cada socio en TM-Socios con tu ID.</p></div></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Actividad reciente de la red</div>
+    <div id="red-actividad"><div class="empty"><div class="ei">📊</div><p>Sin ventas en la red aún.</p></div></div>
+  </div>
+</div>
+
+<!-- MÉTRICAS -->
+<div id="tab-metricas" style="display:none">
+  <div class="met-grid">
+    <div class="met-box"><div class="met-big" id="met-total">0</div><div class="met-lbl">Ventas totales</div></div>
+    <div class="met-box"><div class="met-big" id="met-gan">$0K</div><div class="met-lbl">Ganancia acumulada</div></div>
+    <div class="met-box"><div class="met-big" id="met-mes">0</div><div class="met-lbl">Este mes</div><div class="met-delta" id="met-delta"></div></div>
+    <div class="met-box"><div class="met-big" id="met-ant">0</div><div class="met-lbl">Mes anterior</div></div>
+  </div>
+  <div class="card">
+    <div class="card-title">Programas más vendidos</div>
+    <div id="chart-programas" class="bar-chart"></div>
+  </div>
+  <div class="card">
+    <div class="card-title">Ventas por mes · últimos 6 meses</div>
+    <div id="chart-meses" class="bar-chart"></div>
+  </div>
+</div>
+
+</div><!-- /app -->
+</div><!-- /sc-app -->
+
+<nav class="bottom-nav" id="bottom-nav">
+  <button class="nav-btn act" onclick="goTab('inicio',this)" id="nav-inicio"><span class="ico">🏠</span>Inicio</button>
+  <button class="nav-btn" onclick="goTab('metodos',this)" id="nav-metodos"><span class="ico">🌿</span>Métodos</button>
+  <button class="nav-btn mentor-only" onclick="goTab('red',this)" id="nav-red" style="display:none"><span class="ico">👥</span>Mi Red</button>
+  <button class="nav-btn" onclick="goTab('metricas',this)" id="nav-metricas"><span class="ico">📊</span>Métricas</button>
+</nav>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<script>
+// ══ SUPABASE ══
+const SB_URL='https://psyshqstuauudqjbqnpk.supabase.co';
+const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBzeXNocXN0dWF1dWRxamJxbnBrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk3MzYzMjcsImV4cCI6MjA5NTMxMjMyN30.DMSuxe1F1k_1s1TxdG8VQdGiY56dJOyOcqJVOUfKgQI';
+async function sb(path,opts={}){
+  const r=await fetch(SB_URL+'/rest/v1/'+path,{method:opts.method||'GET',headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json','Prefer':opts.prefer||'return=representation'},body:opts.body});
+  if(!r.ok){const e=await r.text();throw new Error(e);}
+  const t=await r.text();return t?JSON.parse(t):null;
+}
+
+// ══ DATOS ESTÁTICOS ══
+const APPS=[
+  {id:'socios',n:'Red de Socios',desc:'Inventario · Ventas · Canjes GanoExcel',e:'📦',url:'https://tm-socios.vercel.app',on:true,ico:'gold'},
+  {id:'liviana',n:'LIVIANA',desc:'Protocolo nutricional 12 semanas · Pérdida de peso',e:'🌿',url:'https://calculadoradeficit.vercel.app',on:true,ico:'green'},
+  {id:'soon',n:'Más métodos',desc:'CALMA · NOCTURNO · REVERSO · y 12 más en desarrollo',e:'🔮',url:'#',on:false,ico:'dim'},
+];
+
+const M={
+  REVERSO:{n:'REVERSO',nicho:'Diabetes y Metabolismo',dur:90,pvip:859880,pdist:614200,e:'🩸',c:'#ef4444',app:null,comp:[{id:'clasico',c:3},{id:'latterico',c:2}]},
+  LATIDO:{n:'LATIDO',nicho:'Cardiovascular e Hipertensión',dur:90,pvip:1163680,pdist:831200,e:'❤️',c:'#f97316',app:null,comp:[{id:'clasico',c:1},{id:'tresenuno',c:1},{id:'shokorico',c:1},{id:'cordygold',c:1}]},
+  FORTALEZA:{n:'FORTALEZA',nicho:'Defensa Crónica',dur:120,pvip:1163680,pdist:831200,e:'🛡️',c:'#8b5cf6',app:null,comp:[{id:'clasico',c:1},{id:'tresenuno',c:1},{id:'shokorico',c:1},{id:'cordygold',c:1}]},
+  ESCUDO:{n:'ESCUDO',nicho:'Inmunidad',dur:60,pvip:1073520,pdist:766800,e:'⚔️',c:'#06b6d4',app:null,comp:[{id:'clasico',c:1},{id:'tresenuno',c:2}]},
+  MENTE_BRILLANTE:{n:'MENTE BRILLANTE',nicho:'Niños y Estudiantes',dur:60,pvip:860300,pdist:614500,e:'✨',c:'#f59e0b',app:null,comp:[{id:'shokorico',c:3},{id:'creal',c:2}]},
+  CICLO:{n:'CICLO',nicho:'Hormonal Femenino',dur:90,pvip:1176280,pdist:840200,e:'🌸',c:'#ec4899',app:null,comp:[{id:'clasico',c:1},{id:'shokorico',c:1},{id:'cordygold',c:1}]},
+  RAIZ:{n:'RAÍZ',nicho:'Hormonal Masculino',dur:90,pvip:1480080,pdist:1057200,e:'🌱',c:'#16a34a',app:null,comp:[{id:'clasico',c:1},{id:'tresenuno',c:1},{id:'cordygold',c:2}]},
+  LUMEN:{n:'LUMEN',nicho:'Problemas de Piel',dur:90,pvip:795060,pdist:567900,e:'💎',c:'#a78bfa',app:null,comp:[{id:'collagen',c:1},{id:'transparent_soap',c:1},{id:'tresenuno',c:1}]},
+  MELENA:{n:'MELENA',nicho:'Capilar Intensivo',dur:90,pvip:898660,pdist:641900,e:'💆',c:'#d97706',app:null,comp:[{id:'shampoo',c:2},{id:'acondicionador',c:2},{id:'collagen',c:1}]},
+  PEAK:{n:'PEAK',nicho:'Fitness y Rendimiento',dur:60,pvip:937440,pdist:669600,e:'⚡',c:'#0ea5e9',app:null,comp:[{id:'clasico',c:2},{id:'tresenuno',c:1},{id:'cordygold',c:1}]},
+  NOCTURNO:{n:'NOCTURNO',nicho:'Insomnio y Mal Descanso',dur:60,pvip:892080,pdist:637200,e:'🌙',c:'#6366f1',app:null,comp:[{id:'shokorico',c:3},{id:'mocharico',c:2}]},
+  MOVE:{n:'MOVE',nicho:'Articular y Lesiones',dur:90,pvip:1144080,pdist:817200,e:'🦴',c:'#84cc16',app:null,comp:[{id:'collagen',c:3}]},
+  CUERPO_PLENO:{n:'CUERPO PLENO',nicho:'Masa Muscular',dur:90,pvip:982240,pdist:701600,e:'💪',c:'#f97316',app:null,comp:[{id:'creal',c:2},{id:'shokorico',c:1},{id:'cordygold',c:1}]},
+  CALMA:{n:'CALMA',nicho:'Estrés y Cortisol',dur:60,pvip:1273580,pdist:909700,e:'🕊️',c:'#20d489',app:null,comp:[{id:'shokorico',c:4},{id:'tresenuno',c:1}]},
+  LIVIANA:{n:'LIVIANA',nicho:'Pérdida de Peso',dur:90,pvip:1027740,pdist:734100,e:'🌿',c:'#c9a02a',app:'https://calculadoradeficit.vercel.app',comp:[{id:'clasico',c:2},{id:'mocharico',c:1},{id:'latterico',c:1}]},
+};
+
+const P={
+  clasico:{n:'Ganocafé Clásico',e:'☕'},tresenuno:{n:'3en1',e:'☕'},latterico:{n:'Latterico',e:'☕'},
+  mocharico:{n:'Mocharico',e:'☕'},shokorico:{n:'Shoko Rico',e:'🍫'},creal:{n:"C'Real",e:'🌾'},
+  collagen:{n:'Collagen',e:'💎'},cordygold:{n:'CordyGold',e:'🏆'},shampoo:{n:'Shampoo',e:'💆'},
+  acondicionador:{n:'Acondicionador',e:'💆'},exfoliante:{n:'Exfoliante',e:'✨'},
+  transparent_soap:{n:'Transparent Soap',e:'🧼'},gano_soap:{n:'Gano Soap',e:'🧼'},
+  ganofresh:{n:'Gano Fresh',e:'🦷'},caps_ganoderma:{n:'Cáps. Ganoderma',e:'💊'},caps_excellium:{n:'Cáps. Excellium',e:'💊'},
+};
+
+// ══ ESTADO ══
+let ME=null, VENTAS=[], STOCK={}, RED_DIRECTOS=[], VENTAS_RED=[];
+let pinActual='';
+
+// ══ NAVEGACIÓN ══
+function showScreen(id){document.querySelectorAll('.screen,.sc-full').forEach(s=>s.classList.remove('act'));document.getElementById(id)?.classList.add('act');}
+function goTab(tab,btn){
+  ['inicio','metodos','red','metricas'].forEach(t=>{
+    const el=document.getElementById('tab-'+t);
+    if(el)el.style.display=t===tab?'block':'none';
+  });
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('act'));
+  btn?.classList.add('act');
+  if(tab==='inicio')renderInicio();
+  else if(tab==='metodos')renderMetodos();
+  else if(tab==='red')renderRed();
+  else if(tab==='metricas')renderMetricas();
+}
+
+// ══ PIN ══
+function pinPress(n){if(pinActual.length>=6)return;pinActual+=n;updPin();}
+function pinDel(){pinActual=pinActual.slice(0,-1);updPin();}
+function pinClear(){pinActual='';updPin();}
+function updPin(){for(let i=0;i<4;i++)document.getElementById('pdl'+i)?.classList.toggle('fill',i<pinActual.length);}
+
+// ══ AUTH ══
+async function loginSocio(){
+  const email=document.getElementById('l-email').value.trim().toLowerCase();
+  if(!email||!pinActual){toast('Ingresá email y PIN','r');return;}
+  const sp=document.getElementById('l-spin');sp.style.display='inline-block';
+  try{
+    const d=await sb('socios?email=eq.'+encodeURIComponent(email)+'&select=*');
+    if(!d||!d[0]){toast('Email no encontrado','r');return;}
+    const s=d[0];
+    if(String(s.pin)!==String(pinActual)){toast('PIN incorrecto','r');pinClear();return;}
+    if(!s.activo){toast('Cuenta pendiente de aprobación','a');pinClear();return;}
+    ME=s;
+    localStorage.setItem('tm_hub',JSON.stringify({id:s.id,nombre:s.nombre,rol:s.rol}));
+    await entrarApp();
+    toast('¡Bienvenido '+s.nombre+'! 🌿','g');
+  }catch(e){toast('Error: '+e.message,'r');}
+  finally{sp.style.display='none';}
+}
+
+async function handleGoogleOneTap(response){
+  try{
+    const payload=JSON.parse(atob(response.credential.split('.')[1]));
+    const email=payload.email.toLowerCase();
+    const d=await sb('socios?email=eq.'+encodeURIComponent(email)+'&select=*');
+    if(d&&d.length>0){
+      const s=d[0];
+      if(!s.activo){toast('Cuenta pendiente de aprobación','a');return;}
+      ME=s;
+      localStorage.setItem('tm_hub',JSON.stringify({id:s.id,nombre:s.nombre,rol:s.rol}));
+      await entrarApp();
+      toast('¡Bienvenido '+s.nombre+'! 🌿','g');
+    }else{
+      toast('No encontramos una cuenta con ese Google. Accedé desde TM-Socios primero.','a');
+    }
+  }catch(e){toast('Error: '+e.message,'r');}
+}
+
+function logout(){
+  ME=null;VENTAS=[];STOCK={};RED_DIRECTOS=[];VENTAS_RED=[];
+  localStorage.removeItem('tm_hub');
+  document.getElementById('h-user').textContent='';
+  document.getElementById('btn-logout').style.display='none';
+  document.getElementById('bottom-nav').classList.remove('act');
+  document.getElementById('ai-fab').classList.remove('act');
+  document.querySelectorAll('.mentor-only').forEach(e=>e.style.display='none');
+  pinClear();showScreen('sc-login');
+  document.getElementById('l-email').value='';
+}
+
+async function entrarApp(){
+  document.getElementById('h-user').textContent=ME.nombre;
+  document.getElementById('btn-logout').style.display='';
+  document.getElementById('bottom-nav').classList.add('act');
+  document.getElementById('ai-fab').classList.add('act');
+  if(ME.rol==='admin'||ME.rol==='mentor'){
+    document.querySelectorAll('.mentor-only').forEach(e=>e.style.display='');
+  }
+  showScreen('sc-app');
+  await cargarDatos();
+  goTab('inicio',document.getElementById('nav-inicio'));
+  setTimeout(cargarAIInsight, 2000);
+}
+
+// ══ DATOS ══
+async function cargarDatos(){
+  await Promise.all([cargarVentas(),cargarStock(),cargarRed()]);
+}
+
+async function cargarVentas(){
+  try{
+    const v=await sb('ventas_programas?socio_id=eq.'+ME.id+'&select=*&order=created_at.desc');
+    VENTAS=v||[];
+  }catch(e){VENTAS=[];}
+}
+
+async function cargarStock(){
+  try{
+    const movs=await sb('inventario_movimientos?socio_id=eq.'+ME.id+'&select=producto_id,cantidad');
+    STOCK={};
+    (movs||[]).forEach(m=>{
+      if(!STOCK[m.producto_id])STOCK[m.producto_id]=0;
+      STOCK[m.producto_id]+=parseFloat(m.cantidad);
+    });
+  }catch(e){STOCK={};}
+}
+
+async function cargarRed(){
+  if(ME.rol!=='admin'&&ME.rol!=='mentor')return;
+  try{
+    const d=await sb('socios?referido_por=eq.'+ME.id+'&select=*&order=created_at.desc');
+    RED_DIRECTOS=d||[];
+    if(RED_DIRECTOS.length){
+      const ids=RED_DIRECTOS.map(s=>s.id).join(',');
+      const vr=await sb('ventas_programas?socio_id=in.('+ids+')&select=socio_id,metodo_id,created_at&order=created_at.desc&limit=20');
+      VENTAS_RED=vr||[];
+    }
+  }catch(e){RED_DIRECTOS=[];VENTAS_RED=[];}
+}
+
+// ══ RENDER INICIO ══
+function renderInicio(){
+  document.getElementById('hero-nombre').textContent=ME.nombre;
+  const roles={mentor:'⭐ Socio Mentor',admin:'🔑 Admin Training Minds',socio:'👤 Socio'};
+  document.getElementById('hero-rol').textContent=(roles[ME.rol]||'👤 Socio')+' · Training Minds';
+
+  const gan=VENTAS.reduce((a,v)=>{const m=M[v.metodo_id];return m?a+(m.pvip-m.pdist):a;},0);
+  const stockTotal=Math.round(Object.values(STOCK).reduce((a,b)=>a+b,0));
+  document.getElementById('st-ventas').textContent=VENTAS.length;
+  document.getElementById('st-ganancia').textContent='$'+Math.round(gan/1000)+'K';
+  document.getElementById('st-stock').textContent=stockTotal;
+
+  if(ME.rol==='admin'||ME.rol==='mentor'){
+    document.getElementById('st-red-box').style.display='';
+    document.getElementById('st-red').textContent=RED_DIRECTOS.length;
+  }
+
+  // Apps del ecosistema
+  document.getElementById('apps-grid').innerHTML=APPS.map(app=>`
+    <a class="app-card${app.on?'':' soon'}" href="${app.on?app.url:'#'}" ${app.on?'target="_blank"':''} style="text-decoration:none;color:inherit">
+      <div class="app-icon ${app.ico}">${app.e}</div>
+      <div class="app-info">
+        <div class="app-name">${app.n}</div>
+        <div class="app-desc">${app.desc}</div>
+        <span class="app-badge ${app.on?'badge-on':'badge-off'}">${app.on?'● Activa':'Próximamente'}</span>
+      </div>
+      ${app.on?'<span style="color:var(--gold);font-size:1rem;flex-shrink:0">→</span>':''}
+    </a>`).join('');
+
+  // Actividad reciente
+  const el=document.getElementById('actividad-lista');
+  if(!VENTAS.length){el.innerHTML='<div class="empty"><div class="ei">📊</div><p>Sin ventas registradas aún.<br>Tus ventas en TM-Socios aparecerán aquí automáticamente.</p></div>';return;}
+  el.innerHTML=VENTAS.slice(0,8).map(v=>{
+    const m=M[v.metodo_id];const gan=m?m.pvip-m.pdist:0;
+    return`<div class="act-row">
+      <div>
+        <div style="font-size:.83rem;font-weight:600;color:var(--cream)">${m?.e||'🌿'} ${m?.n||v.metodo_id}</div>
+        <div style="font-size:.67rem;color:var(--cream3);margin-top:2px">📦 TM-Socios · ${v.cliente_nombre||'—'} · ${new Date(v.created_at).toLocaleDateString('es-CO')}</div>
+      </div>
+      <div style="text-align:right;flex-shrink:0;margin-left:12px">
+        <div style="font-size:.78rem;font-weight:700;color:var(--v)">+$${Math.round(gan/1000)}K</div>
+        <div style="font-size:.6rem;color:var(--cream3)">ganancia</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ══ RENDER MÉTODOS ══
+function renderMetodos(){
+  document.getElementById('metodos-grid').innerHTML=Object.entries(M).map(([id,m])=>`
+    <div class="metodo-card" style="--mc:${m.c}">
+      <div class="mc-top">
+        <span class="mc-emoji">${m.e}</span>
+        ${m.app?'<span class="mc-live">● App activa</span>':''}
+      </div>
+      <div class="mc-name">${m.n}</div>
+      <div class="mc-nicho">${m.nicho}</div>
+      <div class="mc-tags">
+        <span class="mc-tag">⏱ ${m.dur} días</span>
+        <span class="mc-tag precio">VIP $${Math.round(m.pvip/1000)}K</span>
+        <span class="mc-tag gan">+$${Math.round((m.pvip-m.pdist)/1000)}K</span>
+      </div>
+      <div class="mc-prods">${m.comp.map(item=>`<span class="mc-prod">${P[item.id]?.e||''} ${P[item.id]?.n||item.id} ×${item.c}</span>`).join('')}</div>
+      ${m.app
+        ?`<a href="${m.app}" target="_blank" class="mc-btn on">🚀 Ir a la plataforma →</a>`
+        :`<div class="mc-btn off">Plataforma en desarrollo</div>`
+      }
+    </div>`).join('');
+}
+
+// ══ RENDER RED ══
+function renderRed(){
+  document.getElementById('red-directos').textContent=RED_DIRECTOS.length;
+  document.getElementById('red-total').textContent=RED_DIRECTOS.length;
+
+  const ahora=new Date();
+  const activos=RED_DIRECTOS.filter(s=>{
+    const vs=VENTAS_RED.filter(v=>v.socio_id===s.id);
+    return vs.length&&(ahora-new Date(vs[0].created_at))<30*24*3600*1000;
+  }).length;
+  document.getElementById('red-activos').textContent=activos;
+
+  const lista=document.getElementById('red-lista');
+  if(!RED_DIRECTOS.length){
+    lista.innerHTML='<div class="empty"><div class="ei">👥</div><p>No hay socios directos asignados.<br>En TM-Socios, editá el campo <strong>referido_por</strong> de cada socio con tu ID para conectarlos a tu red.</p></div>';
+  }else{
+    lista.innerHTML=RED_DIRECTOS.map(s=>{
+      const vs=VENTAS_RED.filter(v=>v.socio_id===s.id);
+      const estaActivo=vs.length&&(ahora-new Date(vs[0].created_at))<30*24*3600*1000;
+      const ini=s.nombre.split(' ').map(w=>w[0]||'').join('').substring(0,2).toUpperCase();
+      const ganRed=vs.reduce((a,v)=>{const m=M[v.metodo_id];return m?a+(m.pvip-m.pdist):a;},0);
+      return`<div class="soc-card">
+        <div class="soc-av">${ini}</div>
+        <div class="soc-info">
+          <div class="soc-name">${s.nombre}
+            <span class="chip ${s.rol==='mentor'?'chip-gold':'chip-s'}">${s.rol}</span>
+            <span class="chip ${s.activo?'chip-ok':'chip-s'}">${s.activo?'Activo':'Inactivo'}</span>
+          </div>
+          <div class="soc-sub">${s.email}${s.ciudad?' · '+s.ciudad:''}</div>
+          <div class="soc-stats-row">
+            <div class="soc-stat"><strong>${vs.length}</strong> ventas</div>
+            <div class="soc-stat"><strong>$${Math.round(ganRed/1000)}K</strong> ganancia</div>
+            ${vs.length?`<div class="soc-stat">Última: ${new Date(vs[0].created_at).toLocaleDateString('es-CO')}</div>`:'<div class="soc-stat">Sin ventas</div>'}
+          </div>
+        </div>
+        <div class="act-dot ${estaActivo?'on':'off'}"></div>
+      </div>`;
+    }).join('');
+  }
+
+  const actEl=document.getElementById('red-actividad');
+  if(!VENTAS_RED.length){actEl.innerHTML='<div class="empty"><div class="ei">📊</div><p>Sin ventas en la red aún.</p></div>';return;}
+  actEl.innerHTML=VENTAS_RED.slice(0,8).map(v=>{
+    const m=M[v.metodo_id];const soc=RED_DIRECTOS.find(s=>s.id===v.socio_id);
+    return`<div class="act-row">
+      <div>
+        <div style="font-size:.82rem;font-weight:600;color:var(--cream)">${m?.e||'🌿'} ${m?.n||v.metodo_id}</div>
+        <div style="font-size:.67rem;color:var(--cream3);margin-top:2px">por ${soc?.nombre||'Socio'} · ${new Date(v.created_at).toLocaleDateString('es-CO')}</div>
+      </div>
+      <div style="font-size:.73rem;font-weight:700;color:var(--v);margin-left:12px;flex-shrink:0">
+        +$${Math.round(((m?.pvip||0)-(m?.pdist||0))/1000)}K
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ══ RENDER MÉTRICAS ══
+function renderMetricas(){
+  const gan=VENTAS.reduce((a,v)=>{const m=M[v.metodo_id];return m?a+(m.pvip-m.pdist):a;},0);
+  document.getElementById('met-total').textContent=VENTAS.length;
+  document.getElementById('met-gan').textContent='$'+Math.round(gan/1000)+'K';
+
+  const ahora=new Date();
+  const mc=ahora.getMonth(),ac=ahora.getFullYear();
+  const ma=mc===0?11:mc-1,aa=mc===0?ac-1:ac;
+  const vMes=VENTAS.filter(v=>{const d=new Date(v.created_at);return d.getMonth()===mc&&d.getFullYear()===ac;}).length;
+  const vAnt=VENTAS.filter(v=>{const d=new Date(v.created_at);return d.getMonth()===ma&&d.getFullYear()===aa;}).length;
+  document.getElementById('met-mes').textContent=vMes;
+  document.getElementById('met-ant').textContent=vAnt;
+  const delta=document.getElementById('met-delta');
+  if(vAnt>0){const pct=Math.round((vMes-vAnt)/vAnt*100);delta.textContent=(pct>=0?'↑ +':' ↓ ')+Math.abs(pct)+'% vs mes ant.';delta.style.color=pct>=0?'var(--v)':'var(--r)';}
+  else delta.textContent='';
+
+  // Chart: programas
+  const porM={};VENTAS.forEach(v=>{if(!porM[v.metodo_id])porM[v.metodo_id]=0;porM[v.metodo_id]++;});
+  const sorted=Object.entries(porM).sort((a,b)=>b[1]-a[1]).slice(0,6);
+  const maxV=sorted[0]?.[1]||1;
+  const cpEl=document.getElementById('chart-programas');
+  if(!sorted.length){cpEl.innerHTML='<div class="empty"><div class="ei">📊</div><p>Sin ventas aún.</p></div>';}
+  else{cpEl.innerHTML=sorted.map(([id,cnt])=>{const m=M[id];return`<div class="bar-row"><div class="bar-label">${m?.e||'🌿'} ${m?.n||id}</div><div class="bar-track"><div class="bar-fill" style="width:${Math.round(cnt/maxV*100)}%"><span class="bar-val">${cnt}</span></div></div></div>`;}).join('');}
+
+  // Chart: meses
+  const meses={};
+  for(let i=5;i>=0;i--){
+    const d=new Date(ac,mc-i,1);
+    const k=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');
+    const lbl=d.toLocaleDateString('es-CO',{month:'short',year:'2-digit'});
+    meses[k]={lbl,cnt:0};
+  }
+  VENTAS.forEach(v=>{const d=new Date(v.created_at);const k=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');if(meses[k])meses[k].cnt++;});
+  const arr=Object.values(meses);const maxM=Math.max(...arr.map(m=>m.cnt),1);
+  document.getElementById('chart-meses').innerHTML=arr.map(m=>`<div class="bar-row"><div class="bar-label">${m.lbl}</div><div class="bar-track"><div class="bar-fill" style="width:${m.cnt?Math.max(Math.round(m.cnt/maxM*100),8):0}%"><span class="bar-val">${m.cnt}</span></div></div></div>`).join('');
+}
+
+// ══ MODALES ══
+function openModal(id){document.getElementById(id)?.classList.add('act');}
+function closeModal(id){document.getElementById(id)?.classList.remove('act');}
+document.querySelectorAll('.modal-bg').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('act');}));
+
+// ══ AI ══
+async function cargarAIInsight(){
+  if(!ME||!VENTAS.length)return;
+  const el=document.getElementById('ai-insight');
+  const txt=document.getElementById('ai-insight-text');
+  el.style.display='';
+  try{
+    const r=await fetch('/api/hub-ai',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        pregunta:'Dame un consejo en máximo 2 oraciones sobre qué hacer hoy para hacer crecer mi negocio Training Minds esta semana.',
+        ventas:VENTAS,stock:STOCK,red:RED_DIRECTOS,socioNombre:ME.nombre,rol:ME.rol
+      })
+    });
+    const d=await r.json();
+    txt.textContent=d.respuesta||'Tocá aquí para hablar con tu asesor IA.';
+  }catch(e){txt.textContent='Tocá aquí para hablar con tu asesor IA. 🤖';}
+}
+
+async function enviarIA(){
+  const inp=document.getElementById('ai-input');
+  const q=inp.value.trim();if(!q)return;
+  inp.value='';
+  await preguntarIA(q);
+}
+
+async function preguntarIA(pregunta){
+  openModal('modal-ai');
+  const chat=document.getElementById('ai-chat');
+  const sp=document.getElementById('ai-spin');const ico=document.getElementById('ai-ico');
+  chat.innerHTML+='<div class="ai-msg user">'+pregunta+'</div>';
+  chat.innerHTML+='<div id="ai-typing" class="ai-typing"><div class="ai-dot"></div><div class="ai-dot"></div><div class="ai-dot"></div></div>';
+  chat.scrollTop=chat.scrollHeight;
+  sp.style.display='inline-block';ico.style.display='none';
+  try{
+    const r=await fetch('/api/hub-ai',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({pregunta,ventas:VENTAS,stock:STOCK,red:RED_DIRECTOS,socioNombre:ME.nombre,rol:ME.rol})
+    });
+    const d=await r.json();
+    document.getElementById('ai-typing')?.remove();
+    chat.innerHTML+='<div class="ai-msg bot">'+(d.respuesta||'Error al obtener respuesta.').replace(/\n/g,'<br>')+'</div>';
+    chat.scrollTop=chat.scrollHeight;
+  }catch(e){
+    document.getElementById('ai-typing')?.remove();
+    chat.innerHTML+='<div class="ai-msg bot" style="color:var(--r)">Error de conexión con el asesor IA.</div>';
+  }finally{sp.style.display='none';ico.style.display='inline';}
+}
+
+// ══ TOAST ══
+function toast(msg,tipo='g'){
+  const t=document.getElementById('toast');t.textContent=msg;
+  t.style.background={r:'#3b0a0a',a:'#3b2500',g:'#0a2e14'}[tipo]||'#0a2e14';
+  t.style.borderColor={r:'rgba(248,113,113,.25)',a:'rgba(251,191,36,.25)',g:'rgba(34,197,94,.25)'}[tipo]||'rgba(34,197,94,.25)';
+  t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3200);
+}
+
+// ══ INIT ══
+(async()=>{
+  const saved=localStorage.getItem('tm_hub');
+  if(saved){
+    try{
+      const s=JSON.parse(saved);
+      const d=await sb('socios?id=eq.'+s.id+'&select=*');
+      if(d&&d[0]&&d[0].activo){ME=d[0];await entrarApp();return;}
+    }catch(e){}
+    localStorage.removeItem('tm_hub');
+  }
+  showScreen('sc-login');
+})();
+</script>
+</body>
+</html>
