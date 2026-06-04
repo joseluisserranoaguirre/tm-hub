@@ -875,8 +875,18 @@ async function abrirVincularRef(){
 }
 
 function filtrarSocios(){
-  const q=document.getElementById('vinc-filtro').value.toLowerCase();
-  const filtrados=q?TODOS_SOCIOS_VINC.filter(s=>s.nombre.toLowerCase().includes(q)||(s.codigo_ganoexcel||'').toLowerCase().includes(q)):TODOS_SOCIOS_VINC;
+  let q=document.getElementById('vinc-filtro').value.trim();
+  if(q.includes('ref=')){
+    const match=q.match(/[?&]ref=([^&]+)/);
+    if(match){q=decodeURIComponent(match[1]);document.getElementById('vinc-filtro').value=q;}
+  }
+  const ql=q.toLowerCase();
+  const filtrados=ql
+    ?TODOS_SOCIOS_VINC.filter(s=>
+        s.nombre.toLowerCase().includes(ql)||
+        (s.codigo_ganoexcel||'').toLowerCase().includes(ql)||
+        s.id.toLowerCase().includes(ql))
+    :TODOS_SOCIOS_VINC;
   renderListaVinc(filtrados);
 }
 
@@ -884,8 +894,9 @@ function renderListaVinc(lista){
   const el=document.getElementById('vinc-lista');
   if(!lista.length){el.innerHTML='<div style="padding:16px;text-align:center;color:var(--cream3);font-size:.78rem">Sin resultados</div>';return;}
   const chipRol={mentor:'color:#e2b93b',constructor:'color:#38bdf8',socio:'color:var(--cream3)',admin:'color:#e2b93b'};
-  el.innerHTML=lista.map(s=>`
-    <div onclick="seleccionarVinc('${s.id}','${s.nombre.replace(/'/g,"\\'")}','${s.rol}','${s.codigo_ganoexcel||''}')"
+  window._vincLista=lista;
+  el.innerHTML=lista.map((s,i)=>`
+    <div onclick="seleccionarVinc(${i})"
       style="padding:11px 14px;border-bottom:1px solid var(--border-s);cursor:pointer;transition:.15s;display:flex;align-items:center;gap:10px"
       onmouseover="this.style.background='rgba(255,255,255,.04)'" onmouseout="this.style.background=''"
       id="vinc-item-${s.id}">
@@ -901,14 +912,15 @@ function renderListaVinc(lista){
     </div>`).join('');
 }
 
-function seleccionarVinc(id,nombre,rol,codigo){
-  VINC_REF_ID=id;
+function seleccionarVinc(idx){
+  const s=window._vincLista?.[idx];if(!s)return;
+  VINC_REF_ID=s.id;
   document.querySelectorAll('[id^="vinc-item-"]').forEach(el=>el.style.background='');
-  const item=document.getElementById('vinc-item-'+id);
+  const item=document.getElementById('vinc-item-'+s.id);
   if(item)item.style.background='rgba(34,197,94,.08)';
   const prev=document.getElementById('vinc-seleccionado');
   prev.style.display='';
-  prev.innerHTML=`✅ Seleccionaste a <strong>${nombre}</strong> · ${rol}${codigo?' · Cód: '+codigo:''}`;
+  prev.innerHTML=`✅ Seleccionaste a <strong>${s.nombre}</strong> · ${s.rol}${s.codigo_ganoexcel?' · Cód: '+s.codigo_ganoexcel:''}`;
 }
 
 async function confirmarVinculo(){
