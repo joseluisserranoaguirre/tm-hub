@@ -297,13 +297,15 @@ header{background:rgba(7,13,26,.96);backdrop-filter:blur(20px);border-bottom:1px
   <div class="modal">
     <div class="modal-handle"></div>
     <div class="modal-title">🔗 Vincularte a tu referidor</div>
-    <p style="font-size:.78rem;color:var(--cream3);margin-bottom:16px;line-height:1.6">Ingresá el código GanoExcel de quien te invitó. <strong style="color:var(--gold-text)">Una vez guardado no se puede cambiar</strong> sin autorización del admin.</p>
-    <div class="f" style="margin-bottom:16px">
-      <div class="lbl">Código GanoExcel de quien te invitó</div>
-      <input class="inp" id="vinc-codigo" placeholder="Código de tu referidor">
-      <div id="vinc-preview" style="display:none;margin-top:8px;background:var(--vl);border:1px solid rgba(34,197,94,.25);border-radius:var(--rad-xs);padding:9px 12px;font-size:.8rem;color:var(--v)"></div>
-      <div id="vinc-error" style="display:none;margin-top:8px;font-size:.76rem;color:var(--r)"></div>
+    <p style="font-size:.78rem;color:var(--cream3);margin-bottom:14px;line-height:1.6"><strong style="color:var(--gold-text)">Una vez guardado no se puede cambiar</strong> sin autorización del admin.</p>
+    <div class="f" style="margin-bottom:10px">
+      <div class="lbl">Buscar por nombre o código</div>
+      <input class="inp" id="vinc-filtro" placeholder="Escribí para filtrar..." oninput="filtrarSocios()">
     </div>
+    <div id="vinc-lista" style="max-height:220px;overflow-y:auto;border:1px solid var(--border-s);border-radius:var(--rad-xs);margin-bottom:14px;background:rgba(0,0,0,.15)">
+      <div style="padding:16px;text-align:center;color:var(--cream3);font-size:.78rem">Cargando socios...</div>
+    </div>
+    <div id="vinc-seleccionado" style="display:none;background:var(--vl);border:1px solid rgba(34,197,94,.25);border-radius:var(--rad-xs);padding:10px 14px;margin-bottom:14px;font-size:.82rem;color:var(--v)"></div>
     <div style="display:flex;gap:8px">
       <button class="btn btn-gold" style="flex:1" onclick="confirmarVinculo()"><span id="vinc-spin" style="display:none" class="spin"></span>Confirmar vínculo</button>
       <button class="btn btn-out" onclick="closeModal('modal-vincular-ref')" style="padding:0 16px">Cancelar</button>
@@ -824,7 +826,7 @@ async function abrirPerfil(){
     bloque.innerHTML=`<div style="background:var(--al);border:1px solid rgba(251,191,36,.25);border-radius:var(--rad-xs);padding:10px 14px">
       <div style="font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--a);margin-bottom:4px">🔗 Sin referidor asignado</div>
       <div style="font-size:.76rem;color:var(--cream2);margin-bottom:8px">¿Alguien te invitó? Podés vincularte ahora. Una vez guardado no se puede cambiar.</div>
-      <button class="btn btn-out" style="padding:6px 14px;font-size:.75rem" onclick="closeModal('modal-perfil');setTimeout(()=>openModal('modal-vincular-ref'),200)">🔗 Vincularme a mi referidor</button>
+      <button class="btn btn-out" style="padding:6px 14px;font-size:.75rem" onclick="closeModal('modal-perfil');setTimeout(abrirVincularRef,200)">🔗 Vincularme a mi referidor</button>
     </div>`;
   }
   openModal('modal-perfil');
@@ -855,35 +857,62 @@ async function guardarPerfil(){
   finally{sp.style.display='none';}
 }
 
-// Vincular referidor
-let VINC_REF_ID=null,vincTimer=null;
-document.addEventListener('input',e=>{
-  if(e.target.id!=='vinc-codigo')return;
-  clearTimeout(vincTimer);
-  const codigo=e.target.value.trim();
-  document.getElementById('vinc-preview').style.display='none';
-  document.getElementById('vinc-error').style.display='none';
-  if(codigo.length<2)return;
-  vincTimer=setTimeout(async()=>{
-    try{
-      let d=await sb('socios?codigo_ganoexcel=eq.'+encodeURIComponent(codigo)+'&select=id,nombre,rol&activo=eq.true');
-      if(!d||!d.length)d=await sb('socios?nombre=ilike.'+encodeURIComponent('%'+codigo+'%')+'&select=id,nombre,rol,codigo_ganoexcel&activo=eq.true&limit=1');
-      if(d&&d[0]){
-        const ref=d[0];VINC_REF_ID=ref.id;
-        const prev=document.getElementById('vinc-preview');
-        prev.style.display='';
-        prev.innerHTML=`✅ <strong>${ref.nombre}</strong> · ${ref.rol}${ref.codigo_ganoexcel?' · '+ref.codigo_ganoexcel:''}`;
-      }else{
-        VINC_REF_ID=null;
-        const err=document.getElementById('vinc-error');
-        err.style.display='';err.textContent='No se encontró ningún socio con ese código.';
-      }
-    }catch(e){}
-  },500);
-});
+// Vincular referidor — dropdown con filtro client-side
+let VINC_REF_ID=null,TODOS_SOCIOS_VINC=[];
+
+async function abrirVincularRef(){
+  VINC_REF_ID=null;
+  document.getElementById('vinc-filtro').value='';
+  document.getElementById('vinc-seleccionado').style.display='none';
+  const lista=document.getElementById('vinc-lista');
+  lista.innerHTML='<div style="padding:16px;text-align:center;color:var(--cream3);font-size:.78rem">Cargando socios...</div>';
+  openModal('modal-vincular-ref');
+  try{
+    const d=await sb('socios?activo=eq.true&select=id,nombre,rol,codigo_ganoexcel&order=nombre.asc');
+    TODOS_SOCIOS_VINC=(d||[]).filter(s=>s.id!==ME.id);
+    renderListaVinc(TODOS_SOCIOS_VINC);
+  }catch(e){lista.innerHTML='<div style="padding:16px;text-align:center;color:var(--r);font-size:.78rem">Error cargando socios</div>';}
+}
+
+function filtrarSocios(){
+  const q=document.getElementById('vinc-filtro').value.toLowerCase();
+  const filtrados=q?TODOS_SOCIOS_VINC.filter(s=>s.nombre.toLowerCase().includes(q)||(s.codigo_ganoexcel||'').toLowerCase().includes(q)):TODOS_SOCIOS_VINC;
+  renderListaVinc(filtrados);
+}
+
+function renderListaVinc(lista){
+  const el=document.getElementById('vinc-lista');
+  if(!lista.length){el.innerHTML='<div style="padding:16px;text-align:center;color:var(--cream3);font-size:.78rem">Sin resultados</div>';return;}
+  const chipRol={mentor:'color:#e2b93b',constructor:'color:#38bdf8',socio:'color:var(--cream3)',admin:'color:#e2b93b'};
+  el.innerHTML=lista.map(s=>`
+    <div onclick="seleccionarVinc('${s.id}','${s.nombre.replace(/'/g,"\\'")}','${s.rol}','${s.codigo_ganoexcel||''}')"
+      style="padding:11px 14px;border-bottom:1px solid var(--border-s);cursor:pointer;transition:.15s;display:flex;align-items:center;gap:10px"
+      onmouseover="this.style.background='rgba(255,255,255,.04)'" onmouseout="this.style.background=''"
+      id="vinc-item-${s.id}">
+      <div style="width:32px;height:32px;border-radius:50%;background:var(--s2);border:1px solid var(--border-s);display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-weight:700;font-size:.9rem;color:var(--gold-text);flex-shrink:0">
+        ${s.nombre.split(' ').map(w=>w[0]||'').join('').substring(0,2).toUpperCase()}
+      </div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:.82rem;font-weight:600;color:var(--cream)">${s.nombre}</div>
+        <div style="font-size:.65rem;margin-top:2px;${chipRol[s.rol]||'color:var(--cream3)'}">
+          ${s.rol}${s.codigo_ganoexcel?' · '+s.codigo_ganoexcel:''}
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+function seleccionarVinc(id,nombre,rol,codigo){
+  VINC_REF_ID=id;
+  document.querySelectorAll('[id^="vinc-item-"]').forEach(el=>el.style.background='');
+  const item=document.getElementById('vinc-item-'+id);
+  if(item)item.style.background='rgba(34,197,94,.08)';
+  const prev=document.getElementById('vinc-seleccionado');
+  prev.style.display='';
+  prev.innerHTML=`✅ Seleccionaste a <strong>${nombre}</strong> · ${rol}${codigo?' · Cód: '+codigo:''}`;
+}
 
 async function confirmarVinculo(){
-  if(!VINC_REF_ID){toast('Buscá el código de tu referidor primero','r');return;}
+  if(!VINC_REF_ID){toast('Seleccioná tu referidor de la lista primero','r');return;}
   if(!confirm('¿Confirmar vínculo? No se podrá cambiar después sin autorización del admin.'))return;
   const sp=document.getElementById('vinc-spin');sp.style.display='inline-block';
   try{
@@ -894,8 +923,7 @@ async function confirmarVinculo(){
       await sb('socios?id=eq.'+VINC_REF_ID,{method:'PATCH',body:JSON.stringify({rol:'constructor'})});
     }
     closeModal('modal-vincular-ref');
-    VINC_REF_ID=null;
-    document.getElementById('vinc-codigo').value='';
+    VINC_REF_ID=null;TODOS_SOCIOS_VINC=[];
     toast('✅ Vínculo establecido. ¡Ya hacés parte de la red!','g');
   }catch(e){toast('Error: '+e.message,'r');}
   finally{sp.style.display='none';}
