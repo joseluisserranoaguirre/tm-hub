@@ -103,6 +103,7 @@ header{background:rgba(7,13,26,.96);backdrop-filter:blur(20px);border-bottom:1px
 .app-icon{width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0}
 .app-icon.gold{background:linear-gradient(135deg,rgba(201,160,42,.15),rgba(201,160,42,.08));border:1px solid var(--border-h)}
 .app-icon.green{background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.2)}
+.app-icon.purple{background:rgba(139,92,246,.12);border:1px solid rgba(139,92,246,.3)}
 .app-icon.dim{background:rgba(255,255,255,.04);border:1px solid var(--border-s)}
 .app-info{flex:1;min-width:0}
 .app-name{font-family:'Cormorant Garamond',serif;font-size:.98rem;font-weight:700;color:var(--cream);margin-bottom:3px}
@@ -478,7 +479,7 @@ async function sb(path,opts={}){
 const APPS=[
   {id:'socios',n:'Red de Socios',desc:'Inventario · Ventas · Canjes GanoExcel',e:'📦',url:'https://tm-socios.vercel.app',on:true,ico:'gold'},
   {id:'liviana',n:'LIVIANA',desc:'Protocolo nutricional 12 semanas · Pérdida de peso',e:'🌿',url:'https://calculadoradeficit.vercel.app',on:true,ico:'green'},
-  {id:'soon',n:'Más métodos',desc:'CALMA · NOCTURNO · REVERSO · y 12 más en desarrollo',e:'🔮',url:'#',on:false,ico:'dim'},
+  {id:'marca',n:'Marca Personal',desc:'Construí tu marca de salud o Franquicia Digital · IA especializada',e:'✦',url:'https://tm-marca.vercel.app',on:true,ico:'purple'},
 ];
 
 const M={
@@ -654,16 +655,28 @@ function renderInicio(){
   actualizarLinkHub();
 
   // Apps del ecosistema
-  document.getElementById('apps-grid').innerHTML=APPS.map(app=>`
-    <a class="app-card${app.on?'':' soon'}" href="${app.on?app.url:'#'}" ${app.on?'target="_blank"':''} style="text-decoration:none;color:inherit">
+  document.getElementById('apps-grid').innerHTML=APPS.map(app=>{
+    // Para TM-Marca: pasar email para pre-llenar login + mostrar estado de acceso
+    let url=app.url;
+    let extraBadge='';
+    if(app.id==='marca'&&ME?.email){
+      url=app.url+'?email='+encodeURIComponent(ME.email);
+      if(ME.acceso_marca){
+        extraBadge=`<span class="app-badge" style="background:rgba(139,92,246,.15);color:#c4b5fd">✦ Con acceso</span>`;
+      }else{
+        extraBadge=`<span class="app-badge" style="background:var(--al);color:var(--a)">Completar caso de éxito</span>`;
+      }
+    }
+    return`<a class="app-card${app.on?'':' soon'}" href="${app.on?url:'#'}" ${app.on?'target="_blank"':''} style="text-decoration:none;color:inherit">
       <div class="app-icon ${app.ico}">${app.e}</div>
       <div class="app-info">
         <div class="app-name">${app.n}</div>
         <div class="app-desc">${app.desc}</div>
-        <span class="app-badge ${app.on?'badge-on':'badge-off'}">${app.on?'● Activa':'Próximamente'}</span>
+        ${extraBadge||`<span class="app-badge ${app.on?'badge-on':'badge-off'}">${app.on?'● Activa':'Próximamente'}</span>`}
       </div>
       ${app.on?'<span style="color:var(--gold);font-size:1rem;flex-shrink:0">→</span>':''}
-    </a>`).join('');
+    </a>`;
+  }).join('');
 
   // Actividad reciente
   const el=document.getElementById('actividad-lista');
