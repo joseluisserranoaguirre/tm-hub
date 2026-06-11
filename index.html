@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Training Minds · Hub Central</title>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Sora:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
 <style>
 :root{
   --bg:#070d1a;--s0:#0c1525;--s1:#101e33;--s2:#162540;--s3:#1e304f;
@@ -212,6 +212,62 @@ header{background:rgba(7,13,26,.96);backdrop-filter:blur(20px);border-bottom:1px
   .met-big{font-size:2rem}
   .bar-label{min-width:80px;font-size:.62rem}
 }
+
+/* ══ BEAM LOGIN (GOLD) ══ */
+@property --beam-angle{syntax:'<angle>';initial-value:0deg;inherits:false}
+.login-page{position:relative;width:100%;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px 20px;overflow:hidden}
+.login-blob-a{position:absolute;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(201,160,42,.18) 0%,transparent 65%);top:-180px;left:50%;transform:translateX(-50%);filter:blur(50px);pointer-events:none;animation:blobfloat 7s ease-in-out infinite}
+.login-blob-b{position:absolute;width:350px;height:280px;border-radius:50%;background:radial-gradient(circle,rgba(201,160,42,.1) 0%,transparent 70%);bottom:-80px;right:-80px;filter:blur(40px);pointer-events:none;animation:blobfloat 10s ease-in-out infinite reverse}
+@keyframes blobfloat{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(-18px)}}
+.login-brand{text-align:center;margin-bottom:24px;z-index:1}
+.login-logo-wrap{width:72px;height:72px;background:linear-gradient(135deg,var(--gold-l),var(--gold-d));border-radius:20px;margin:0 auto 12px;display:flex;align-items:center;justify-content:center;font-size:1.9rem;box-shadow:0 8px 40px rgba(201,160,42,.4),0 0 0 1px rgba(201,160,42,.2);animation:logopulse-gold 4s ease-in-out infinite;overflow:hidden}
+@keyframes logopulse-gold{0%,100%{box-shadow:0 8px 40px rgba(201,160,42,.4),0 0 0 1px rgba(201,160,42,.2)}50%{box-shadow:0 8px 50px rgba(201,160,42,.65),0 0 0 2px rgba(201,160,42,.35)}}
+.login-brand-name{font-family:'Cormorant Garamond',serif;font-size:1.85rem;font-weight:700;color:var(--cream);line-height:1;margin-bottom:4px}
+.login-brand-tag{font-size:.7rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--gold)}
+.login-card-shell{position:relative;width:100%;max-width:360px;z-index:1}
+.beam-ring{position:absolute;inset:-1.5px;border-radius:22px;overflow:hidden;z-index:0;pointer-events:none}
+.beam-ring::before{content:'';position:absolute;inset:-80%;background:conic-gradient(from 0deg,transparent 0%,transparent 68%,rgba(240,208,96,.45) 76%,rgba(226,185,59,.9) 80%,rgba(201,160,42,1) 83%,rgba(240,208,96,.55) 87%,transparent 92%);animation:beamspin-gold 2.8s linear infinite}
+@keyframes beamspin-gold{to{transform:rotate(360deg)}}
+.login-card{position:relative;z-index:1;background:linear-gradient(145deg,rgba(14,21,40,.98),rgba(10,16,32,.99));border-radius:20px;padding:28px 24px;margin:1.5px}
+.login-title{font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:700;color:var(--cream);margin-bottom:2px}
+.login-sub{font-size:.73rem;color:var(--cream3);margin-bottom:22px}
+
+/* ══ RESPONSIVE SIDEBAR / BOTTOM NAV ══ */
+@media (min-width:769px){
+  .sb-brand-desk{display:flex !important;flex-direction:column}
+  .bottom-nav{flex-direction:column !important;position:fixed !important;top:0;left:0;bottom:0;right:auto !important;width:224px !important;border-right:1px solid var(--border);border-top:none !important;padding:0 10px 20px !important;justify-content:flex-start !important;gap:3px;overflow-y:auto;overflow-x:hidden}
+  .nav-btn{flex-direction:row !important;width:100%;padding:10px 12px !important;border-radius:10px;gap:11px;justify-content:flex-start !important;border:1px solid transparent;min-width:0}
+  .nav-btn:hover{background:var(--s1) !important;border-color:var(--border-s) !important}
+  .nav-btn.act{background:var(--gold-glow) !important;border-color:var(--border) !important;transform:none !important}
+  .nav-btn .ico{font-size:1.1rem !important;flex-shrink:0;width:22px;text-align:center}
+  .nav-lbl-wrap{display:flex;flex-direction:column;gap:1px;text-align:left;min-width:0}
+  .nav-lbl{font-size:.8rem !important;font-weight:700 !important;letter-spacing:.2px;white-space:nowrap}
+  .nav-sub{font-size:.68rem !important;opacity:.75;white-space:nowrap;color:var(--cream3)}
+  .nav-btn.act .nav-lbl{color:var(--gold-text) !important}
+  .nav-btn.act .nav-sub{color:var(--gold) !important;opacity:1 !important}
+  header{position:fixed;left:224px;right:0;top:0;width:calc(100% - 224px)}
+  .app{margin-left:224px;padding-top:70px !important;padding-bottom:40px !important}
+  .ai-fab{bottom:24px !important;right:24px !important}
+  .toast{left:calc(50% + 112px) !important}
+}
+@media (max-width:768px){
+  .sb-brand-desk{display:none !important}
+  .nav-btn{min-width:48px;padding:5px 7px !important}
+  .nav-btn.act{background:rgba(201,160,42,.15) !important;border-radius:14px !important;padding:5px 10px !important}
+  .nav-lbl-wrap{display:contents}
+}
+/* Font update */
+body{font-family:'Inter',sans-serif !important}
+.btn,.inp,.nav-btn,.lbl,.lbl-l{font-family:'Inter',sans-serif !important}
+.pin-btn{font-family:'Cormorant Garamond',serif !important}
+/* Mejorar pin dots */
+.pin-dot.fill{background:var(--gold-l);border-color:var(--gold-l);box-shadow:0 0 10px rgba(201,160,42,.65)}
+/* Botones mejorados */
+.btn-gold{color:#1a0d00 !important;font-weight:700 !important}
+.btn-gold:hover{transform:translateY(-2px);box-shadow:0 6px 28px rgba(201,160,42,.55)}
+/* Stat numbers bolder */
+.sv{font-family:'Inter',sans-serif;font-weight:800 !important}
+
 </style>
 </head>
 <body>
@@ -316,34 +372,49 @@ header{background:rgba(7,13,26,.96);backdrop-filter:blur(20px);border-bottom:1px
 
 <!-- ══ LOGIN ══ -->
 <div class="sc-full act" id="sc-login">
-  <div class="login-wrap">
-    <div class="login-crown">🌿</div>
-    <div class="login-title">Training Minds</div>
-    <div class="login-sub">Hub Central · GanoExcel</div>
-    <div class="f" style="margin-bottom:14px">
-      <div class="lbl">Email</div>
-      <input class="inp" type="email" id="l-email" placeholder="tu@email.com">
+  <div class="login-page">
+    <div class="login-blob-a"></div>
+    <div class="login-blob-b"></div>
+    <div class="login-brand">
+      <div class="login-logo-wrap">
+        <video autoplay loop muted playsinline style="width:100%;height:100%;object-fit:cover;border-radius:18px;display:block">
+          <source src="logo-intro.mp4" type="video/mp4">
+          <span style="font-size:1.8rem">🌿</span>
+        </video>
+      </div>
+      <div class="login-brand-name">Training Minds</div>
+      <div class="login-brand-tag">Hub Central · GanoExcel</div>
     </div>
-    <div style="font-size:.68rem;color:var(--cream3);text-align:center;letter-spacing:.5px">PIN DE ACCESO</div>
-    <div class="pin-row">
-      <div class="pin-dot" id="pdl0"></div><div class="pin-dot" id="pdl1"></div>
-      <div class="pin-dot" id="pdl2"></div><div class="pin-dot" id="pdl3"></div>
+    <div class="login-card-shell">
+      <div class="beam-ring"></div>
+      <div class="login-card">
+        <div class="login-title">Bienvenido</div>
+        <div class="login-sub">Ingresá con tu email y PIN de acceso</div>
+        <div class="f" style="margin-bottom:12px">
+          <div class="lbl">Email</div>
+          <input class="inp" type="email" id="l-email" placeholder="tu@email.com">
+        </div>
+        <div style="font-size:.63rem;color:var(--cream3);text-align:center;letter-spacing:1px;font-weight:700;text-transform:uppercase">Tu PIN</div>
+        <div class="pin-row">
+          <div class="pin-dot" id="pdl0"></div><div class="pin-dot" id="pdl1"></div>
+          <div class="pin-dot" id="pdl2"></div><div class="pin-dot" id="pdl3"></div>
+        </div>
+        <div class="pin-pad">
+          <button class="pin-btn" onclick="pinPress(1)">1</button><button class="pin-btn" onclick="pinPress(2)">2</button><button class="pin-btn" onclick="pinPress(3)">3</button>
+          <button class="pin-btn" onclick="pinPress(4)">4</button><button class="pin-btn" onclick="pinPress(5)">5</button><button class="pin-btn" onclick="pinPress(6)">6</button>
+          <button class="pin-btn" onclick="pinPress(7)">7</button><button class="pin-btn" onclick="pinPress(8)">8</button><button class="pin-btn" onclick="pinPress(9)">9</button>
+          <button class="pin-btn" onclick="pinClear()" style="font-size:.85rem;color:var(--r)">✕</button>
+          <button class="pin-btn" onclick="pinPress(0)">0</button>
+          <button class="pin-btn" onclick="pinDel()">⌫</button>
+        </div>
+        <button class="btn btn-gold btn-full" onclick="loginSocio()">
+          <span id="l-spin" style="display:none" class="spin"></span> Entrar →
+        </button>
+        <div style="height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent);margin:18px 0"></div>
+        <div id="g_id_onload" data-client_id="445285065984-efdh2i3dcsdufd48r0r3c7r5urlkmino.apps.googleusercontent.com" data-callback="handleGoogleOneTap" data-auto_prompt="false"></div>
+        <div class="g_id_signin" data-type="standard" data-size="large" data-theme="filled_black" data-text="signin_with" data-shape="rectangular" data-logo_alignment="left" data-width="312" style="display:flex;justify-content:center"></div>
+      </div>
     </div>
-    <div class="pin-pad">
-      <button class="pin-btn" onclick="pinPress(1)">1</button><button class="pin-btn" onclick="pinPress(2)">2</button><button class="pin-btn" onclick="pinPress(3)">3</button>
-      <button class="pin-btn" onclick="pinPress(4)">4</button><button class="pin-btn" onclick="pinPress(5)">5</button><button class="pin-btn" onclick="pinPress(6)">6</button>
-      <button class="pin-btn" onclick="pinPress(7)">7</button><button class="pin-btn" onclick="pinPress(8)">8</button><button class="pin-btn" onclick="pinPress(9)">9</button>
-      <button class="pin-btn" onclick="pinClear()" style="font-size:.85rem;color:var(--r)">✕</button>
-      <button class="pin-btn" onclick="pinPress(0)">0</button>
-      <button class="pin-btn" onclick="pinDel()">⌫</button>
-    </div>
-    <button class="btn btn-gold btn-full" onclick="loginSocio()">
-      <span id="l-spin" style="display:none" class="spin"></span> Entrar →
-    </button>
-    <div style="height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent);margin:20px 0"></div>
-    <div style="font-size:.65rem;color:var(--cream3);text-align:center;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px">O entrá con Google</div>
-    <div id="g_id_onload" data-client_id="445285065984-efdh2i3dcsdufd48r0r3c7r5urlknino.apps.googleusercontent.com" data-callback="handleGoogleOneTap" data-auto_prompt="false"></div>
-    <div class="g_id_signin" data-type="standard" data-size="large" data-theme="filled_black" data-text="signin_with" data-shape="rectangular" data-logo_alignment="left" data-width="320"></div>
   </div>
 </div>
 
@@ -457,10 +528,18 @@ header{background:rgba(7,13,26,.96);backdrop-filter:blur(20px);border-bottom:1px
 </div><!-- /sc-app -->
 
 <nav class="bottom-nav" id="bottom-nav">
-  <button class="nav-btn act" onclick="goTab('inicio',this)" id="nav-inicio"><span class="ico">🏠</span>Inicio</button>
-  <button class="nav-btn" onclick="goTab('metodos',this)" id="nav-metodos"><span class="ico">🌿</span>Métodos</button>
-  <button class="nav-btn mentor-only" onclick="goTab('red',this)" id="nav-red" style="display:none"><span class="ico">👥</span>Mi Red</button>
-  <button class="nav-btn" onclick="goTab('metricas',this)" id="nav-metricas"><span class="ico">📊</span>Métricas</button>
+  <div class="sb-brand-desk" style="display:none;padding:18px 10px 14px;border-bottom:1px solid var(--border-s);margin-bottom:8px;margin-left:-10px;margin-right:-10px;padding-left:14px;width:calc(100% + 20px)">
+    <div style="display:flex;align-items:center;gap:9px">
+      <div style="width:32px;height:32px;background:linear-gradient(135deg,var(--gold-l),var(--gold-d));border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:.9rem;overflow:hidden;flex-shrink:0">
+        <video autoplay loop muted playsinline style="width:100%;height:100%;object-fit:cover" onerror="this.style.display='none'"><source src="logo-intro.mp4" type="video/mp4"></video>
+      </div>
+      <div><div style="font-family:'Cormorant Garamond',serif;font-size:.95rem;font-weight:700;color:var(--cream)">Training Minds</div><div style="font-size:.56rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--gold)">Hub Central</div></div>
+    </div>
+  </div>
+  <button class="nav-btn act" onclick="goTab('inicio',this)" id="nav-inicio"><span class="ico">🏠</span><span class="nav-lbl-wrap"><span class="nav-lbl">Inicio</span><span class="nav-sub">tu panel</span></span></button>
+  <button class="nav-btn" onclick="goTab('metodos',this)" id="nav-metodos"><span class="ico">🌿</span><span class="nav-lbl-wrap"><span class="nav-lbl">Métodos</span><span class="nav-sub">15 programas</span></span></button>
+  <button class="nav-btn mentor-only" onclick="goTab('red',this)" id="nav-red" style="display:none"><span class="ico">👥</span><span class="nav-lbl-wrap"><span class="nav-lbl">Mi Red</span><span class="nav-sub">tu equipo</span></span></button>
+  <button class="nav-btn" onclick="goTab('metricas',this)" id="nav-metricas"><span class="ico">📊</span><span class="nav-lbl-wrap"><span class="nav-lbl">Métricas</span><span class="nav-sub">tus resultados</span></span></button>
 </nav>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
